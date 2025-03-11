@@ -6,11 +6,16 @@ import { FormControl } from "./GenericControls";
 interface InputControlProps {
   item: FormControl;
   register: UseFormRegister<any>; // <-- Tipado de react-hook-form
-  errors: FieldErrors<any>; 
+  errors: FieldErrors<any>;
   loading?: boolean;
 }
 
-const InputControl: React.FC<InputControlProps> = ({ item, register, errors, loading }) => {
+const InputControl: React.FC<InputControlProps> = ({
+  item,
+  register,
+  errors,
+  loading,
+}) => {
   const [show, setShow] = React.useState(false);
 
   const getInputControl = () => {
@@ -42,20 +47,47 @@ const InputControl: React.FC<InputControlProps> = ({ item, register, errors, loa
             </button>
           </div>
         );
-
-      default:
+      case "select":
         return (
-          <input
+          <select
             id={`${item.name}-${item.id}`}
-            type={item.type}
             {...register(item.name, {
               required: item.required && item.message,
               pattern: item.pattern && item.pattern,
             })}
             disabled={loading || item.disabled}
-            placeholder={item.placeholder}
-            className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-          />
+            className="block min-w-0 grow py-2 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+          >
+            <option value="" disabled selected hidden>
+              {item.placeholder || "Selecciona una opción"}
+            </option>
+            {item.options?.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        );
+      default:
+        return (
+          <div className="relative w-full">
+            <div className="absolute inset-y-0 left-2 flex items-center px-2 text-gray-500">
+              {item.prefix && <span>{item.prefix}</span>}
+            </div>
+            <input
+              id={`${item.name}-${item.id}`}
+              type={item.type}
+              {...register(item.name, {
+                required: item.required && item.message,
+                pattern: item.pattern && item.pattern,
+              })}
+              disabled={loading || item.disabled}
+              placeholder={item.placeholder}
+              className={`w-full block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ${
+                item.prefix ? "pl-10" : ""
+              } `}
+            />
+          </div>
         );
     }
   };

@@ -1,8 +1,12 @@
-interface PatternControl {
-    value: RegExp;
-    message: string;
-  }
-  
+export interface PatternControl {
+  value: RegExp;
+  message: string;
+}
+
+export interface OptionControl {
+  name: string;
+  value: string;
+}
 
 export interface FormControl {
   id: string;
@@ -22,4 +26,6 @@ export interface FormControl {
   message?: string;
   pattern?: PatternControl;
   disabled?: boolean;
+  options?: OptionControl[];
+  prefix?: string;
 }
